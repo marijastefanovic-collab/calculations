@@ -1,5 +1,5 @@
 # MD Simulation Analysis Report
-## Glutenase Variants — Catalytic Geometry Analysis
+## Glutenase Catalytic Geometry Analysis — Positive Controls and Engineering Target
 
 **Date:** 2026-06-02  
 **Data source:** Martin Floor, BSC — `/gpfs/projects/bsc72/mfloor/glutenase/phase_a/ff14SB`  
@@ -9,18 +9,22 @@
 
 ## 1. Overview
 
-This report summarizes the catalytic geometry analysis of glutenase MD simulations from the BSC glutenase project. Three S8-family enzyme variants with a bound substrate peptide (**LPYPQPQLP**) were analysed over 500 ns of production MD per replica.
+This report summarizes the catalytic geometry analysis of MD simulations from the BSC glutenase project. Three S8-type serine proteases with a bound substrate peptide (**LPYPQPQLP**) were analysed over ~500 ns of production MD per replica.
+
+**Study design:**
+- **WT-S8** and **MUT-S8** are positive controls with known glutenase activity. They share high sequence similarity; MUT-S8 is a double mutant of WT-S8.
+- **ENG-S8** is an independent engineering target — a newly discovered S8-type serine protease with a different sequence, different active site numbering (Asp20–His52–Ser209), and only two structural Ca²⁺ ions. It is not derived from WT-S8; the simulations characterise its catalytic geometry as a baseline for engineering.
 
 ### Systems Analysed
 
-| System | Description | Replicas | Simulation time | Frames |
-|--------|-------------|----------|-----------------|--------|
-| WT-S8 | Wild-type glutenase + LPYPQPQLP | 3 | ~480 ns each | 14,371 |
-| MUT-S8 | Mutant glutenase + LPYPQPQLP | 3 | ~490 ns each | 14,679 |
-| ENG-S8 | Engineered variant + LPYPQPQLP | 3 | 500 ns each | 15,000 |
-| REF-S9 | Reference enzyme (different family) | 3 | ~100 ns each | — |
+| System | Role | Replicas | Simulation time | Frames |
+|--------|------|----------|-----------------|--------|
+| WT-S8 | Positive control (wild-type) | 3 | ~480 ns each | 14,371 |
+| MUT-S8 | Positive control (double mutant of WT) | 3 | ~490 ns each | 14,679 |
+| ENG-S8 | Engineering target (new S8 enzyme) | 3 | 500 ns each | 15,000 |
+| REF-S9 | Reference (different protease family) | 3 | ~100 ns each | — |
 
-> **Note:** REF-S9 belongs to a different protease family with a distinct active site numbering — catalytic triad and attack geometry analyses were not performed for this system.
+> **Note:** REF-S9 belongs to a different protease family — triad and attack analyses were not performed for this system.
 
 ### Simulation Parameters
 
@@ -101,7 +105,9 @@ A frame is classified as **productive** when both criteria are met simultaneousl
 - WT-S8 is intermediate (3.67 Å, 60°, 8.9% productive)
 - ENG-S8 shows markedly poor geometry: attack distance 5.06 Å (>1 Å further than WT), BD angle 47°, and only 0.2% productive frames
 
-ENG-S8's poor attack geometry suggests that the engineering altered the active site architecture in a way that disrupts substrate positioning for catalysis. The high inter-replica variability in WT-S8 (0.2–14.5%) and MUT-S8 (0.6–42.1%) indicates incomplete conformational sampling in some replicas.
+For the positive controls, the high inter-replica variability (WT-S8: 0.2–14.5%, MUT-S8: 0.6–42.1%) indicates incomplete conformational sampling in some replicas; longer simulations or additional replicas may be needed for converged estimates.
+
+ENG-S8's poor attack geometry (attack distance 5.06 Å vs ~3.3–3.7 Å in the controls) establishes the baseline for this engineering target. Unlike WT/MUT where the substrate is well-positioned in some replicas, ENG-S8 does not achieve productive attack geometry in any replica, indicating the native scaffold requires engineering to improve substrate positioning.
 
 ---
 
@@ -126,7 +132,7 @@ Structural Ca²⁺ ions were monitored. The first-shell coordination count was c
 
 In WT-S8 and MUT-S8, Ca360 and Ca361 are stably coordinated (~7 ligands each), typical of structural Ca²⁺ sites (coordination number 6–8). Ca362 is partially occupied (mean ~3), suggesting a solvent-exposed site.
 
-ENG-S8 has only two Ca²⁺ ions. Ca274 is well-coordinated (6.3), comparable to Ca360/Ca361 in the other variants. Ca273 shows low coordination (3.0 ± 0.1), similar to Ca362 in WT/MUT. The absence of a third Ca²⁺ in ENG-S8 may reflect differences in the engineered protein surface or crystallisation conditions.
+ENG-S8, as a distinct enzyme, has only two structural Ca²⁺ ions. Ca274 is well-coordinated (6.3 ± 0.5), consistent with a stable structural site comparable to Ca360/Ca361 in the positive controls. Ca273 shows low, dynamic coordination (3.0 ± 0.1), similar to the partially occupied Ca362 in WT/MUT. The different number of Ca²⁺ ions reflects the distinct protein sequence and surface of ENG-S8 relative to the positive controls.
 
 No significant difference in Ca²⁺ coordination is observed between WT-S8 and MUT-S8, indicating those mutations do not perturb the structural calcium sites.
 
@@ -143,11 +149,9 @@ No significant difference in Ca²⁺ coordination is observed between WT-S8 and 
 | Productive frames | 8.9% | **17.8%** | 0.2% | **MUT-S8** |
 | Ca²⁺ coordination | Stable | Stable | Partial | WT-S8 / MUT-S8 |
 
-**MUT-S8** shows the best overall catalytic geometry: shortest attack distance, BD angle closest to ideal, most productive frames, and the highest His–Ser contact frequency (14.7%, driven by replica_02 with 44%). This suggests the mutations enhance both nucleophile positioning and His–Ser triad organisation.
+**Among the positive controls**, MUT-S8 shows superior attack geometry compared to WT-S8: shorter attack distance (3.29 vs 3.67 Å), BD angle closer to ideal (79° vs 60°), twice the productive frame rate (17.8% vs 8.9%), and higher His–Ser contact frequency (14.7% vs 5.2%). WT-S8 maintains a marginally better Asp–His contact (75.9% vs 71.9%). The double mutation therefore improves nucleophile positioning without destabilising the triad.
 
-**WT-S8** has the best Asp–His contact (75.9%) and good attack geometry (8.9% productive), representing a well-organised Michaelis complex, though less productive than MUT-S8.
-
-**ENG-S8** shows the worst performance: no His–Ser contact, poor attack geometry (5.06 Å, 0.2% productive), and only two structural Ca²⁺ ions. The engineered variant (Asp20–His52–Ser209) appears to have a significantly altered active site architecture that disrupts substrate positioning for catalysis.
+**ENG-S8 (engineering target):** The baseline characterisation shows no His–Ser contact (0%), poor attack geometry (5.06 Å attack distance, BD 47°, 0.2% productive), and a maintained Asp–His interaction (62.9% < 3.5 Å). As ENG-S8 is a distinct enzyme from WT/MUT, direct comparison of absolute values is not the primary goal. The results establish a baseline catalytic geometry for this new S8 scaffold prior to any engineering. The poor substrate positioning relative to the positive controls suggests there is room for improvement through targeted engineering of the ENG-S8 active site.
 
 ---
 
@@ -174,7 +178,7 @@ The catalytic His entries were identified by their Asp neighbor in the propKa pe
 
 For ENG-S8 and WT-S8 the results are physically consistent: Asp is deprotonated and His is neutral at pH 7.0, as expected for the Michaelis complex of a serine protease.
 
-**MUT-S8 Asp42 pKa = 8.03** is the notable exception. This elevation persists even without the substrate, indicating it is a direct consequence of the mutations increasing Asp42 burial (propKa predicts 100% desolvation for Asp42 in MUT-S8 vs a smaller contribution in WT-S8). If correct, Asp42 in MUT-S8 would be **protonated at pH 7.0**, which would impair its role as the general base in the charge relay. This is consistent with the weak His–Ser triad contact seen in MUT-S8 (only 0.6% of frames below 3.5 Å).
+**MUT-S8 Asp42 pKa = 8.03** is the notable exception. This elevation persists even without the substrate, indicating it is a direct consequence of the mutations increasing Asp42 burial (propKa predicts 100% desolvation for Asp42 in MUT-S8 vs a smaller contribution in WT-S8). If correct, Asp42 in MUT-S8 would be **protonated at pH 7.0**, which would alter the charge relay. This is an unexpected finding given that MUT-S8 actually shows better catalytic geometry than WT-S8 — suggesting the protonated Asp may still be functional in this context, or that the propKa prediction is overestimating the burial effect of the mutations.
 
 ### Per-nitrogen distance analysis
 
