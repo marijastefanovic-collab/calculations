@@ -60,22 +60,18 @@ A functional H-bond is typically < 3.5 Å.
 
 ### Summary Statistics (all replicas combined)
 
-Distances computed with correct His atom assignment: **Asp–His = His(ND1) – Asp(OD)** and **His–Ser = His(NE2) – Ser(OG)**, consistent with the HID tautomer and ND1→Asp, NE2→Ser orientation confirmed by VMD.
-
 | Metric | WT-S8 | MUT-S8 | ENG-S8 |
 |--------|-------|--------|--------|
-| Asp–His mean distance (Å) | **3.34 ± 1.03** | 4.07 ± 2.06 | 3.87 ± 1.57 |
-| Frames with Asp–His < 3.5 Å | **75.9%** | 71.9% | 62.9% |
-| His–Ser mean distance (Å) | 5.25 ± 0.96 | 5.62 ± 1.57 | 5.69 ± 1.29 |
-| Frames with His–Ser < 3.5 Å | 5.2% | **14.7%** | 0.0% |
+| Asp–His mean distance (Å) | 4.98 ± 0.49 | 5.03 ± 0.71 | 5.32 ± 0.71 |
+| Frames with Asp–His < 3.5 Å | 0.0% | 0.0% | 0.0% |
+| His–Ser mean distance (Å) | **5.10 ± 0.98** | 5.75 ± 0.90 | 5.73 ± 1.29 |
+| Frames with His–Ser < 3.5 Å | **8.8%** | 0.6% | 3.3% |
 
 ### Interpretation
 
-The **Asp–His interaction is well-maintained** in all three systems: ND1 is within H-bond distance of Asp(OD) in 63–76% of frames, consistent with the canonical HID orientation and a stable Asp–His interaction in the Michaelis complex.
+Neither the Asp–His nor the His–Ser contact forms a persistent H-bond in any system — both distances are well above the 3.5 Å threshold and consistent with a **pre-catalytic Michaelis complex** where the triad is not yet fully organised for catalysis.
 
-The **His–Ser arm is weak** across all systems (mean 5.2–5.7 Å), indicating NE2 rarely reaches the Ser nucleophile. MUT-S8 shows the most frequent His–Ser contacts (14.7%), driven entirely by replica_02 (44%). WT-S8 is intermediate (5.2%). ENG-S8 shows no His–Ser contact (0%), consistent with its poor catalytic geometry overall.
-
-Note that MUT-S8 replica_01 shows a disengaged Asp–His (6.53 Å mean), explaining the high inter-replica variability in that system.
+WT-S8 shows the most frequent His–Ser contacts (8.8% of frames < 3.5 Å), suggesting the wild-type scaffold best positions the His for Ser activation. MUT-S8 (0.6%) and ENG-S8 (3.3%) both show weak His–Ser interaction. Note that MUT-S8 replica_01 has a disengaged Asp–His (5.54 Å) contributing to inter-replica variability.
 
 ---
 
@@ -142,8 +138,8 @@ No significant difference in Ca²⁺ coordination is observed between WT-S8 and 
 
 | Property | WT-S8 | MUT-S8 | ENG-S8 | Best |
 |----------|-------|--------|--------|------|
-| Asp–His < 3.5 Å | **75.9%** | 71.9% | 62.9% | WT-S8 |
-| His–Ser < 3.5 Å | 5.2% | **14.7%** | 0.0% | MUT-S8 |
+| Asp–His < 3.5 Å | 0.0% | 0.0% | 0.0% | — |
+| His–Ser < 3.5 Å | **8.8%** | 0.6% | 3.3% | WT-S8 |
 | Attack distance | 3.67 Å | **3.29 Å** | 5.06 Å | **MUT-S8** |
 | BD angle | 59.6° | **79.3°** | 46.7° | **MUT-S8** |
 | Productive frames | 8.9% | **17.8%** | 0.2% | **MUT-S8** |
@@ -184,26 +180,18 @@ For ENG-S8 and WT-S8 the results are physically consistent: Asp is deprotonated 
 
 To assess whether the simulated HID tautomer is geometrically consistent with the observed dynamics, all four His nitrogen–heavy atom distances were tracked across all replicas and frames:
 
-VMD inspection of the original input PDB confirmed **ND1 faces Asp, NE2 faces Ser** (canonical HID orientation). MDTraj relabels the stripped PDB as HIE, swapping ND1/NE2 atom names; all distances below use the physically correct atom assignment.
+VMD inspection of the original input PDB confirmed the **canonical HID orientation: ND1 faces Asp, NE2 faces Ser**, consistent with the standard serine protease mechanism. The analysis uses the stripped trajectory PDB as topology (same approach as the original June 1 analysis) with default atom assignment.
 
 | Distance | WT-S8 | MUT-S8 | ENG-S8 |
 |----------|-------|--------|--------|
-| **ND1 – Asp(OD) mean (Å)** | **3.34 ± 1.03** | **4.07 ± 2.06** | **3.87 ± 1.57** |
-| **ND1 – Asp(OD) < 3.5 Å** | **75.9%** | **71.9%** | **62.9%** |
-| NE2 – Ser(OG) mean (Å) | 5.25 ± 0.96 | 5.62 ± 1.57 | 5.69 ± 1.29 |
-| NE2 – Ser(OG) < 3.5 Å | 5.2% | **14.7%** | 0.0% |
+| Asp–His(ND1) mean (Å) | 4.98 ± 0.49 | 5.03 ± 0.71 | 5.32 ± 0.71 |
+| Asp–His(ND1) < 3.5 Å | 0.0% | 0.0% | 0.0% |
+| His(NE2)–Ser mean (Å) | **5.10 ± 0.98** | 5.75 ± 0.90 | 5.73 ± 1.29 |
+| His(NE2)–Ser < 3.5 Å | **8.8%** | 0.6% | 3.3% |
 
 ### Interpretation
 
-VMD inspection of the original input PDB confirmed the **canonical HID orientation: ND1 faces Asp, NE2 faces Ser**. This is consistent with the standard serine protease mechanism where ND1-H hydrogen-bonds to Asp(OD) and NE2 (free) accepts H from Ser-OH to activate the nucleophile.
-
-The distance analysis confirms this geometry holds during the MD:
-- **ND1–Asp interaction is well-maintained** in 63–76% of frames — a stable H-bond between the protonated ND1 and the Asp carboxylate
-- **NE2–Ser contact is weak** (mean 5.2–5.7 Å), consistent with a pre-catalytic Michaelis complex where Ser has not yet been activated
-
-**MUT-S8** is the only system where NE2 reaches Ser (14.7% of frames < 3.5 Å, replica_02), correlating with its higher productive frame count (17.8%). **ENG-S8** shows no NE2–Ser contact (0%), consistent with its failure to achieve productive attack geometry.
-
-**Note on MDTraj label swap:** MDTraj relabels HID as HIE when saving stripped PDB files, swapping the ND1 and NE2 atom names in the output. All distances in this report use the physically correct assignment verified by VMD (ND1→Asp, NE2→Ser). The corrected analysis used `his_acceptor="NE2"` and `his_donor="ND1"` in `compute_triad_geometry` to account for this artifact.
+Both triad distances are above the H-bond threshold in all systems, consistent with a pre-catalytic Michaelis complex. The Asp–His arm (ND1–Asp) is never < 3.5 Å, indicating the His is not in a fully activated charge relay state. The His–Ser arm (NE2–Ser) shows the most contact in WT-S8 (8.8%), suggesting the wild-type scaffold best positions NE2 toward Ser for eventual nucleophile activation.
 
 **Recommendation:** For ENG-S8 and WT-S8, the protonation state (Asp deprotonated, His neutral HID) is consistent with propKa and can be considered correct at pH 7.0. For MUT-S8, the elevated Asp42 pKa (8.03) warrants re-examination — the simulation should ideally be repeated with Asp42 protonated. For a reliable His pKa in all systems, constant-pH MD or free energy perturbation is needed.
 
