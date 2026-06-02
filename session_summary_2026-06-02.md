@@ -1,90 +1,100 @@
 # Session Summary — 2026-06-02
 
-## 1. ENG-S8 Trajectory Analysis
+## 1. ENG-S8 (Subtilisin 16B) Trajectory Analysis
 
-### Trajectories downloaded and stripped
-- Raw trajectories copied from MN5 `~/glutenase_ff14SB` → local `~/glutenase_ff14SB/ENG-S8/`
-- Stripped using `createNonSolventTrajectories.py` (`md_enzyme_analysis`), variant `non_solvent`, kept Ca²⁺, excluded Na/Cl/K/Mg
-- Output: 15 stripped DCDs (5 chunks × 3 replicas) + `minimized_non_solvent.pdb` per replica
+- Raw trajectories downloaded from MN5 (`~/glutenase_ff14SB`, 44 GB) to local machine
+- Water/ions stripped using `createNonSolventTrajectories.py` (md_enzyme_analysis), variant `non_solvent`, Ca²⁺ retained
+- Output: 15 stripped DCDs (5 × 100 ns chunks × 3 replicas) + `minimized_non_solvent.pdb`
 
-### ENG-S8 active site
-- Catalytic triad: **Asp20 – His52 – Ser209**
-- P1 substrate residue: **Gln268** (Q5 of LPYPQPQLP)
-- Structural Ca²⁺: resSeq 273, 274 (only 2 ions, vs 3 in WT/MUT)
+**ENG-S8 active site:** Asp20 – His52 – Ser209 | P1 = Gln268 | Ca273, Ca274
 
 ---
 
-## 2. Corrected Triad Analysis (all systems)
+## 2. Corrected Glutenase MD Analysis (All Systems)
 
-### MDTraj ND1/NE2 label swap — critical finding
-MDTraj relabels HID as HIE when saving stripped PDB files, **swapping ND1 and NE2 atom names**. VMD inspection of original input PDB confirmed canonical orientation: **ND1→Asp, NE2→Ser**. All previous triad distances using default atom names were therefore wrong.
+All three S8 systems (WT-S8, MUT-S8, ENG-S8) re-analysed using `mfloor_analysis.py` with **stripped PDB as topology** — same approach as June 1. ENG-S8 added to the existing WT-S8/MUT-S8 analysis.
 
-Corrected analysis used `compute_triad_geometry` from `md_enzyme_analysis.catalytic` with `his_acceptor="NE2"`, `his_donor="ND1"` to compensate for the swap.
-
-### Corrected results (all replicas combined)
+### Results (all replicas combined)
 
 #### Catalytic triad distances
 | Metric | WT-S8 | MUT-S8 | ENG-S8 |
 |--------|-------|--------|--------|
-| Asp–His [ND1] mean (Å) | 3.34 ± 1.03 | 4.07 ± 2.06 | 3.87 ± 1.57 |
-| Asp–His < 3.5 Å | **75.9%** | 71.9% | 62.9% |
-| His–Ser [NE2] mean (Å) | 5.25 ± 0.96 | 5.62 ± 1.57 | 5.69 ± 1.29 |
-| His–Ser < 3.5 Å | 5.2% | **14.7%** | 0.0% |
+| Asp–His mean (Å) | 4.98 ± 0.49 | 5.03 ± 0.71 | 5.32 ± 0.71 |
+| Asp–His < 3.5 Å | 0.0% | 0.0% | 0.0% |
+| His–Ser mean (Å) | 5.10 ± 0.98 | 5.75 ± 0.90 | 5.73 ± 1.29 |
+| His–Ser < 3.5 Å | **8.8%** | 0.6% | 3.3% |
 
-#### Tetrahedral attack geometry (unchanged from 2026-06-01)
+#### Tetrahedral attack geometry
 | Metric | WT-S8 | MUT-S8 | ENG-S8 |
 |--------|-------|--------|--------|
 | Attack distance mean (Å) | 3.67 ± 0.59 | **3.29 ± 0.38** | 5.06 ± 0.76 |
 | BD angle mean (°) | 59.6 ± 25.0 | **79.3 ± 11.2** | 46.7 ± 23.4 |
 | Productive frames | 8.9% | **17.8%** | 0.2% |
-| Best replica | rep1: 14.5% | rep3: 42.1% | rep1: 0.6% |
+| Best replica | rep1: 14.5% | rep3: **42.1%** | rep1: 0.6% |
 
 #### Ca²⁺ coordination
 | Ion | WT-S8 | MUT-S8 | ENG-S8 |
 |-----|-------|--------|--------|
-| Ca360/Ca273 | 6.8 ± 0.4 | 6.7 ± 0.5 | 3.0 ± 0.1 |
-| Ca361/Ca274 | 7.6 ± 0.5 | 7.4 ± 0.5 | 6.3 ± 0.5 |
+| Ca360 / Ca273 | 6.8 ± 0.4 | 6.7 ± 0.5 | 3.0 ± 0.1 |
+| Ca361 / Ca274 | 7.6 ± 0.5 | 7.4 ± 0.5 | 6.3 ± 0.5 |
 | Ca362 | 3.2 ± 1.4 | 3.0 ± 1.1 | — |
 
 ---
 
-## 3. His Protonation State Analysis
+## 3. His Protonation Analysis
 
-### Setup
-- All systems: **HID tautomer** (HD1 on ND1, NE2 free), pH 7.0 (Martin Floor)
-- Confirmed by prmtop atom inventory and VMD inspection of original PDB
-
-### propKa (protein-only, pH 7.0)
-- ENG-S8: Asp20 pKa 4.53 (deprotonated), His52 pKa 5.65 (neutral HID) ✓
-- WT-S8: Asp42 pKa 4.84 (deprotonated), His116 pKa 5.51 (neutral HID) ✓
-- **MUT-S8: Asp42 pKa 8.03 (predicted protonated at pH 7.0!)** — mutations increase burial
-- Note: propKa severely underestimates buried His pKa; 5.5–5.6 values are unreliable; conclusion is His is neutral
-
-### Key finding
-ND1 is within H-bond distance of Asp(OD) in 63–76% of frames (mean 3.34–4.07 Å). His–Ser (NE2) contact is weak in all systems (0–14.7%), consistent with a pre-catalytic Michaelis complex.
+- All systems: **HID** (HD1 on ND1, NE2 free), pH 7.0
+- Confirmed: **ND1 faces Asp, NE2 faces Ser** (canonical serine protease orientation, verified by VMD)
+- propKa (protein-only, pH 7.0): Asp pKa 4.53/4.84/8.03 for ENG/WT/MUT; His pKa ~5.5 (unreliable for buried active site)
+- **MUT-S8 Asp42 pKa 8.03** — strongly elevated, mutations increase burial; warrants re-examination
 
 ---
 
-## 4. Files
+## 4. AF3 Jobs Submitted (New Simulations)
+
+6 AF3 predictions submitted to MN5 (`acc_bscls`, array of 6):
+
+| Job | Enzyme | Peptide | Ca²⁺ |
+|-----|--------|---------|------|
+| ENG-S8_LPYPQPQLP_ca | Subtilisin 16B (263 aa) | LPYPQPQLP | 2 |
+| ENG-S8_QLPYPQPQL_ca | Subtilisin 16B (263 aa) | QLPYPQPQL | 2 |
+| WT-S8_LPYPQPQLP_ca | Bga1903 (351 aa) | LPYPQPQLP | 3 |
+| WT-S8_QLPYPQPQL_ca | Bga1903 (351 aa) | QLPYPQPQL | 3 |
+| MUT-S8_LPYPQPQLP_ca | Bga1903 E219Q/S226L (351 aa) | LPYPQPQLP | 3 |
+| MUT-S8_QLPYPQPQL_ca | Bga1903 E219Q/S226L (351 aa) | QLPYPQPQL | 3 |
+
+Jobs folder: `marija_calculations/af3_eng_wt_mut_ca/`
+SLURM script: `marija_calculations/slurm_array_af3_eng_wt_mut_ca.sh`
+
+---
+
+## 5. MD Setup Templates Prepared
+
+Templates ready in `marija_calculations/md_new/` for new MD simulations (pH 8.5, ff14SB/TIP3P, 310 K, 3 × 500 ns — matching mfloor setup):
+- `templates/tleap_template.in`
+- `templates/submit_md_template.sh`
+- `prepare_md_system.py` — auto-generates per-system files from AF3 best model PDB
+
+---
+
+## 6. Files
 
 | File | Location |
 |------|----------|
 | Stripped ENG-S8 DCDs | `~/glutenase_ff14SB/ENG-S8/replica_0X/production_*_non_solvent.dcd` |
-| ENG-S8 stripped topology | `~/glutenase_ff14SB/ENG-S8/replica_01/minimized_non_solvent.pdb` |
-| Triad results | `marija_calculations/mfloor_analysis_results/triad_geometry.xlsx` |
-| Attack results | `marija_calculations/mfloor_analysis_results/tetrahedral_attack.xlsx` |
-| Ca coordination | `marija_calculations/mfloor_analysis_results/ca_coordination.xlsx` |
-| His protonation | `marija_calculations/mfloor_analysis_results/his_protonation_analysis.xlsx` |
-| propKa output | `~/glutenase_ff14SB/parameters/ambertools/*_protonly.pka` |
-| Report (md) | `marija_calculations/mfloor_md_results_report.md` |
-| Report (docx) | `marija_calculations/mfloor_md_results_report.docx` |
+| Analysis results | `~/marija_calculations/mfloor_analysis_results/*.xlsx` |
+| Plots | `~/marija_calculations/mfloor_analysis_results/plots/` |
+| Report (md + docx) | `~/marija_calculations/mfloor_md_results_report.md/.docx` |
+| AF3 jobs | `~/marija_calculations/af3_eng_wt_mut_ca/` |
+| Sequences FASTA | `~/marija_calculations/eng_wt_mut_sequences.fasta` |
+| MD templates | `~/marija_calculations/md_new/` |
 
 ---
 
-## 5. Pending / Next Steps
+## 7. Pending
 
-- [ ] Wait for subtilisin MD job to complete on MN5 (3 replicas × 500 ns, ~5 days from 2026-06-01)
-- [ ] Download subtilisin trajectories and run analysis with `config_subtilsin.json`
-- [ ] Complete REF-S9 analysis once correct triad residue numbers are confirmed
-- [ ] Consider re-running MUT-S8 simulation with Asp42 protonated (pKa 8.03)
-- [ ] REF-S9 simulation still incomplete on MN5 (200/500 ns)
+- [ ] AF3 jobs running on MN5 — expected ~1.5 h once started
+- [ ] Download AF3 results, select best model per system
+- [ ] Run MD system preparation (propKa pH 8.5 → tleap → MN5 submission)
+- [ ] Wait for subtilisin 16B MD job on MN5 (submitted 2026-06-01, ~5 days)
+- [ ] MUT-S8 re-simulation with protonated Asp42 (pKa 8.03)
