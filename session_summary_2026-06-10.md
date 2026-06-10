@@ -94,7 +94,7 @@ Results (10 frames):
 | Oxyanion | 4.78 ± 0.28 Å |
 | RMSD | 0.69 ± 0.25 Å |
 
-**Key finding:** Ca273 coordination = 3.0 with fixed prmtop confirms this is a genuine low-affinity binding site (biology), not a parametrization artifact. Geometry unchanged from old run — ENG system remains non-productive.
+**Key finding:** Geometry unchanged from old run — ENG system remains non-productive. Ca273 coord = 3.0 (low-affinity site, as expected).
 
 ---
 
